@@ -21,3 +21,6 @@ jobs:
         
     - name: Build
       run: gradle build
+      
+    - name: Run
+      run: gradle run
