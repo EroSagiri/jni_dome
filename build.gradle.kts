@@ -51,5 +51,30 @@ tasks.create("copyLibrary") {
 }
 
 tasks.withType<ProcessResources> {
-    dependsOn("copyLibrary")
+    dependsOn("copyLibrary", "rustBuild")
+}
+
+tasks.create("rustBuild") {
+    group = "rust"
+    doLast {
+        val rustSourceDir = projectDir.resolve("src").resolve("main").resolve("rust")
+        val process = ProcessBuilder("cargo", "build").directory(rustSourceDir).start()
+        process.waitFor()
+        val rustBuildDir = rustSourceDir.resolve("target").resolve("debug")
+
+        rustBuildDir.listFiles()?.forEach {
+            if (it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so")) {
+                it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
+            }
+        }
+    }
+}
+
+tasks.create("rustClean") {
+    group = "rust"
+    doLast {
+        val rustSourceDir = projectDir.resolve("src").resolve("main").resolve("rust")
+        val process = ProcessBuilder("cargo", "clean").directory(rustSourceDir).start()
+        process.waitFor()
+    }
 }
