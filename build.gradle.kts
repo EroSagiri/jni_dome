@@ -42,7 +42,7 @@ tasks.create("copyLibrary") {
     dependsOn("cmakeBuild")
     group = "cmake"
     doLast {
-        val isUnix = System.getProperty("os.name").toLowerCase().contains("nix") || System.getProperty("os.name").toLowerCase().contains("nix") || System.getProperty("os.name").toLowerCase().contains("aix")
+        val isUnix = System.getProperty("os.name").toUpperCase().contains("MAC") || System.getProperty("os.name").toUpperCase().contains("LINUX")
         val buildDir = projectDir.resolve("src").resolve("main").resolve("cpp").resolve("build")
         if(isUnix) {
             buildDir.listFiles()?.filter { it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {

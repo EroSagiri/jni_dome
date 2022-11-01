@@ -8,11 +8,7 @@ object Hello {
     }
 
     fun loadLibraryByResources(libraryName: String): Boolean {
-        val isUnix = System.getProperty("os.name").lowercase(Locale.getDefault()).contains("nix") || System.getProperty("os.name")
-            .lowercase(Locale.getDefault())
-            .contains("nix") || System.getProperty("os.name")
-            .lowercase(Locale.getDefault())
-            .contains("aix")
+        val isUnix = System.getProperty("os.name").uppercase().contains("LINUX") || System.getProperty("os.name").uppercase().contains("MAC")
         val libraryFileName ="${if (isUnix) "lib" else ""}${libraryName}.${if (isUnix) "so" else "dll"}"
         val library = this.javaClass.getResource(libraryFileName)
 
