@@ -7,15 +7,24 @@ object Hello {
         loadLibraryByResources("rust")
     }
 
-    fun loadLibraryByResources(libraryName: String) {
+    fun loadLibraryByResources(libraryName: String): Boolean {
         val libraryFileName ="${libraryName}.${System.getProperty("os.name").lowercase(Locale.getDefault()).takeIf { it.contains("win") }?.let { "dll" } ?: "so"}"
-        this.javaClass.getResource(libraryFileName)?.let {
-            val dllFile = File(it.file)
-            val temp = File.createTempFile(libraryFileName, "")
-            temp.writeBytes(dllFile.readBytes())
+        val library = this.javaClass.getResource(libraryFileName)
 
-            System.getLogger("load ${temp.path}")
-            System.load(temp.path)
+        if(library == null) {
+            println("library $libraryFileName not found")
+            return false
+        } else {
+            library.let {
+                val dllFile = File(it.file)
+                val temp = File.createTempFile(libraryFileName, "")
+                temp.writeBytes(dllFile.readBytes())
+
+                System.getLogger("load ${temp.path}")
+                System.load(temp.path)
+            }
+
+            return true
         }
     }
 
