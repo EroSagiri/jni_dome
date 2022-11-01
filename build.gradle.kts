@@ -57,10 +57,19 @@ tasks.withType<ProcessResources> {
 tasks.create("rustBuild") {
     group = "rust"
     doLast {
+        val isDebug = System.getenv("debug") != null
         val rustSourceDir = projectDir.resolve("src").resolve("main").resolve("rust")
-        val process = ProcessBuilder("cargo", "build").directory(rustSourceDir).start()
-        process.waitFor()
-        val rustBuildDir = rustSourceDir.resolve("target").resolve("debug")
+        val cmd = if (isDebug) {
+            "cargo build".split(" ").toTypedArray()
+        } else {
+            "cargo build --release".split(" ").toTypedArray()
+        }
+        val process = ProcessBuilder(*cmd).directory(rustSourceDir).start()
+        val status = process.waitFor()
+        if (status != 0) {
+            throw RuntimeException("Rust build failed")
+        }
+        val rustBuildDir = rustSourceDir.resolve("target").resolve(if (isDebug) "debug" else "release")
 
         rustBuildDir.listFiles()?.forEach {
             if (it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so")) {

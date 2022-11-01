@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  Windows_build:
     runs-on: windows-latest
 
     steps:
@@ -24,3 +24,41 @@ jobs:
       
     - name: Run
       run: gradle run
+
+
+  Linux_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build
+        run: gradle build
+
+      - name: Run
+        run: gradle run
+
+
+  MacOS_build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build
+        run: gradle build
+
+      - name: Run
+        run: gradle run
