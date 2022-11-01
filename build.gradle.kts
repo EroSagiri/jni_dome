@@ -42,11 +42,18 @@ tasks.create("copyLibrary") {
     dependsOn("cmakeBuild")
     group = "cmake"
     doLast {
-        val buildDir = projectDir.resolve("src").resolve("main").resolve("cpp").resolve("build").resolve("Debug")
-        buildDir.listFiles()?.filter { it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
-            it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
+        val isUnix = System.getProperty("os.name").toLowerCase().contains("nix") || System.getProperty("os.name").toLowerCase().contains("nix") || System.getProperty("os.name").toLowerCase().contains("aix")
+        val buildDir = projectDir.resolve("src").resolve("main").resolve("cpp").resolve("build")
+        if(isUnix) {
+            buildDir.listFiles()?.filter { it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
+                it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
+            }
+        } else {
+            val windowsDebugDir = buildDir.resolve("Debug")
+            windowsDebugDir.listFiles()?.filter { it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
+                it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
+            }
         }
-
     }
 }
 
