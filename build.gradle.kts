@@ -45,13 +45,13 @@ tasks.create("copyLibrary") {
         val isUnix = System.getProperty("os.name").toLowerCase().contains("nix") || System.getProperty("os.name").toLowerCase().contains("nix") || System.getProperty("os.name").toLowerCase().contains("aix")
         val buildDir = projectDir.resolve("src").resolve("main").resolve("cpp").resolve("build")
         if(isUnix) {
-            buildDir.listFiles()?.filter { it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
+            buildDir.listFiles()?.filter { it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
                 println("copy ${it.absolutePath}")
                 it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
             }
         } else {
             val windowsDebugDir = buildDir.resolve("Debug")
-            windowsDebugDir.listFiles()?.filter { it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
+            windowsDebugDir.listFiles()?.filter { it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
                 println("copy ${it.absolutePath}")
                 it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
             }
@@ -81,7 +81,7 @@ tasks.create("rustBuild") {
         val rustBuildDir = rustSourceDir.resolve("target").resolve(if (isDebug) "debug" else "release")
 
         rustBuildDir.listFiles()?.forEach {
-            if (it.isFile && it.name.endsWith(".dll") || it.name.endsWith(".so")) {
+            if (it.name.endsWith(".dll") || it.name.endsWith(".so")) {
                 it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
             }
         }
