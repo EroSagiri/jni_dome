@@ -45,7 +45,7 @@ tasks.create("copyLibrary") {
         val isUnix = System.getProperty("os.name").toUpperCase().contains("MAC") || System.getProperty("os.name").toUpperCase().contains("LINUX")
         val buildDir = projectDir.resolve("src").resolve("main").resolve("cpp").resolve("build")
         if(isUnix) {
-            buildDir.listFiles()?.filter { it.name.endsWith(".dll") || it.name.endsWith(".so") }?.forEach {
+            buildDir.listFiles()?.filter { it.name.endsWith(".dll") || it.name.endsWith(".so") || it.name.endsWith(".dylib") }?.forEach {
                 println("copy ${it.absolutePath}")
                 it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
             }
@@ -81,7 +81,7 @@ tasks.create("rustBuild") {
         val rustBuildDir = rustSourceDir.resolve("target").resolve(if (isDebug) "debug" else "release")
 
         rustBuildDir.listFiles()?.forEach {
-            if (it.name.endsWith(".dll") || it.name.endsWith(".so")) {
+            if (it.name.endsWith(".dll") || it.name.endsWith(".so") || it.name.endsWith(".dylib")) {
                 it.copyTo(projectDir.resolve("src").resolve("main").resolve("resources").resolve(it.name), true)
             }
         }
